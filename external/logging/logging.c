@@ -26,18 +26,13 @@
 #define INTERNAL __attribute__((visibility("internal")))
 #endif
 
-#if defined(__ANDROID__)
-#define ANDROID_LOG_TAG "Dobby"
-#include <android/log.h>
-#endif
-
 static int g_log_level = 1;
 static char g_log_tag[64] = {0};
 static bool time_tag_enabled = false;
 static bool syslog_enabled = false;
 static bool file_log_enabled = false;
 static const char *log_file_path = NULL;
-static int log_file_fd = -1;
+__attribute__((unused)) static int log_file_fd = -1;
 static FILE *log_file_stream = NULL;
 
 PUBLIC void log_set_level(int level) {
@@ -107,18 +102,14 @@ PUBLIC int log_internal_impl(int level, const char *fmt, ...) {
   if (file_log_enabled) {
     char buffer[4096] = {0};
     vsnprintf(buffer, 4096 - 1, fmt, ap);
-    if (fwrite(buffer, sizeof(char), strlen(buffer) + 1, log_file_stream) == -1) {
+    if (fwrite(buffer, sizeof(char), strlen(buffer) + 1, log_file_stream) == (size_t)-1) {
       file_log_enabled = false;
     }
     fflush(log_file_stream);
   }
 
   if (!syslog_enabled && !file_log_enabled) {
-#if defined(__ANDROID__)
-    __android_log_vprint(ANDROID_LOG_INFO, ANDROID_LOG_TAG, fmt, ap);
-#else
     vprintf(fmt, ap);
-#endif
   }
 
 #pragma clang diagnostic warning "-Wformat"

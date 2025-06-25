@@ -1,7 +1,5 @@
 # :< You Shall Not Pass!
-if (0)
-  set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra -Werror")
-endif ()
+# set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -Wall -Wextra")
 
 set(linker_flags "")
 if (NOT DOBBY_DEBUG)
@@ -14,7 +12,8 @@ elseif (SYSTEM.Android)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fomit-frame-pointer")
   if (NOT DOBBY_DEBUG)
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -ffunction-sections -fdata-sections")
-    set(linker_flags "${linker_flags} -Wl,--gc-sections -Wl,--exclude-libs,ALL")
+    set(linker_flags "${linker_flags} -O3 -ffixed-x18 -flto -Wl,--hash-style=both -Wl,-exclude-libs,ALL")
+    set(linker_flags "${linker_flags} -Wl,--gc-sections -Wl,--icf=all,-O3,--lto-O3,--strip-all")
   endif ()
 elseif (SYSTEM.Linux)
   set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fPIC")
@@ -44,7 +43,7 @@ elseif (PROCESSOR.AARCH64)
 endif ()
 
 # sync cxx with c flags
-# set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} ${CMAKE_CXX_FLAGS}")
 
 message(STATUS "CMAKE_C_COMPILER: ${CMAKE_C_COMPILER}")
 message(STATUS "CMAKE_CXX_COMPILER: ${CMAKE_CXX_COMPILER}")

@@ -16,7 +16,7 @@ auto_source_group("." "auto-source-group" "\\.(cc|cpp|c|h)$")
 
 # ===== handle option =====
 
-option(DOBBY_GENERATE_SHARED "Build shared library" ON)
+option(DOBBY_GENERATE_SHARED "Build shared library" OFF)
 
 option(DOBBY_DEBUG "Enable debug logging" OFF)
 
